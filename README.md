@@ -1,4 +1,4 @@
-# Trendyol DevOps Task - E-Commerce Application
+# DevOps Task - E-Commerce Application
 
 This repository contains the Kubernetes infrastructure for an e-commerce application, as well as the CI/CD pipelines for GitHub Actions, GitLab CI/CD, and Jenkins.
 
