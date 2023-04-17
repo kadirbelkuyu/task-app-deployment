@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app
+  labels:
+    app: task-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: task-app
+  template:
+    metadata:
+      labels:
+        app: task-app
+    spec:
+      containers:
+      - name: task-app
+        image: your-dockerhub-username/task-app:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        envFrom:
+        - configMapRef:
+            name: task-app-config
+        - secretRef:
+            name: task-app-secret
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app-worker
+  labels:
+    app: task-app-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-app-worker
+  template:
+    metadata:
+      labels:
+        app: task-app-worker
+    spec:
+      containers:
+      - name: task-app-worker
+        image: your-dockerhub-username/task-app-worker:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        envFrom:
+        - configMapRef:
+            name: task-app-config
+        - secretRef:
+            name: task-app-secret
+      imagePullSecrets:
+      - name: regcred

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: task-app-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: task-app
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: task-app
+    ports:
+    - protocol: TCP
+      port: 80
