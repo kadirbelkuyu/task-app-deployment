@@ -1,0 +1,14 @@
+- name: Deploy Task App
+  hosts: app
+  roles:
+    - app
+
+- name: Deploy Logging
+  hosts: logging
+  roles:
+    - logging
+
+- name: Deploy Monitoring
+  hosts: monitoring
+  roles:
+    - monitoring

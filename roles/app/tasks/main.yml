@@ -1,0 +1,9 @@
+- name: Deploy Task App
+  template:
+    src: app_deployment.yml.j2
+    dest: /tmp/app_deployment.yml
+  notify: Apply Task App Deployment
+
+handlers:
+  - name: Apply Task App Deployment
+    command: kubectl apply -f /tmp/app_deployment.yml

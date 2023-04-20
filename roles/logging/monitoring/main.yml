@@ -1,0 +1,2 @@
+- name: Deploy Monitoring
+  command: kubectl apply -f /path/monitoring.yaml
