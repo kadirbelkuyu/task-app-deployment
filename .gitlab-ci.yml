@@ -1,0 +1,33 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  KUBECONFIG: kubeconfig.yaml
+
+before_script:
+  - apk add --no-cache curl tar bash jq python3
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x kubectl && mv kubectl /usr/local/bin/
+  - echo "$KUBECONFIG_CONTENTS" > kubeconfig.yaml
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t $DOCKER_USERNAME/task-app:$CI_COMMIT_SHORT_SHA .
+    - docker push $DOCKER_USERNAME/task-app:$CI_COMMIT_SHORT_SHA
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl config use-context my-k8s-cluster
+    - kubectl set image deployment/task-app task-app=$DOCKER_USERNAME/task-app:$CI_COMMIT_SHORT_SHA -n task-app
+  only:
+    - main
